@@ -16,11 +16,11 @@
 
 
 namespace lime {
-	
-	
+
+
 	#define INT(a) val_int(arg[a])
-	
-	
+
+
 	value lime_gl_get_error() {
 
 		return alloc_int( glGetError() );
@@ -47,7 +47,7 @@ namespace lime {
 
 
 	value lime_gl_version() {
-		
+
 		const char* gl_ver = (const char*)glGetString(GL_VERSION);
 		const char* gl_sl  = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 		const char* gl_ren = (const char*)glGetString(GL_RENDERER);
@@ -1025,7 +1025,7 @@ namespace lime {
 
 
 	value lime_gl_create_shader(value inType) {
-		
+
 		return alloc_int(glCreateShader(val_int(inType)));
 
 	} DEFINE_PRIM(lime_gl_create_shader,1);
@@ -1077,7 +1077,7 @@ namespace lime {
 		int id = val_int(inId);
 
 		glCompileShader(id);
-		
+
 		return alloc_null();
 
 	} DEFINE_PRIM(lime_gl_compile_shader,1);
@@ -1131,7 +1131,7 @@ namespace lime {
 
 	value lime_gl_get_shader_precision_format(value inShader,value inPrec) {
 
-		#ifdef lime_GLES
+		#ifdef LIME_GLES
 
 			int range[2];
 			int precision;
@@ -1519,7 +1519,7 @@ namespace lime {
 
 	value lime_gl_clear_depth(value depth) {
 
-		#ifdef lime_GLES
+		#ifdef LIME_GLES
 			glClearDepthf(val_number(depth));
 		#else
 			glClearDepth(val_number(depth));
@@ -1568,7 +1568,7 @@ namespace lime {
 
 	value lime_gl_depth_range(value inNear, value inFar) {
 
-		#ifdef lime_GLES
+		#ifdef LIME_GLES
 			glDepthRangef(val_number(inNear), val_number(inFar));
 		#else
 			glDepthRange(val_number(inNear), val_number(inFar));
@@ -1828,49 +1828,49 @@ namespace lime {
 		return alloc_int(result);
 
 	} DEFINE_PRIM(lime_gl_get_tex_parameter,2);
-	
-	
+
+
 	bool OpenGLBindings::initialized = false;
 	void *OpenGLBindings::handle = 0;
-	
-	
+
+
 	bool OpenGLBindings::Init () {
-		
+
 		static bool result = true;
-		
+
 		if (!initialized) {
-			
+
 			initialized = true;
-			
+
 			#ifdef HX_LINUX
-			
+
 			OpenGLBindings::handle = dlopen ("libGL.so.1", RTLD_NOW|RTLD_GLOBAL);
-			
+
 			if (!OpenGLBindings::handle)
 				OpenGLBindings::handle = dlopen ("libGL.so", RTLD_NOW|RTLD_GLOBAL);
-			
+
 			if (!OpenGLBindings::handle) {
-				
+
 				//printf ("Could not load %s (%s)\n",path, dlerror());
 				result = false;
 				return result;
-				
+
 			}
-			
+
 			#endif
-			
+
 			#ifdef NEED_EXTENSIONS
 			#define GET_EXTENSION
 			#include "OpenGLExtensions.h"
 			#undef DEFINE_EXTENSION
 			#endif
-			
+
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 
 } //namespace lime
 
