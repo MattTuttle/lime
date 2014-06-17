@@ -69,6 +69,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 			if (Sys.args ().indexOf ("-livereload") > -1) {
 				
 				var path = FileSystem.fullPath ("manifest");
+				#if mac
+				if (path == null) path = FileSystem.fullPath("../Resources/manifest");
+				#end
 				lastModified = FileSystem.stat (path).mtime.getTime ();
 				
 				timer = new Timer (2000);
@@ -186,9 +189,8 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		#else
 		
-		return null;
-		//if (className.exists(id)) return cast (Type.createInstance (className.get (id), []), ByteArray);
-		//else return ByteArray.readFile (path.get (id));
+		if (className.exists(id)) return cast (Type.createInstance (className.get (id), []), ByteArray);
+		else return ByteArray.readFile (path.get (id));
 		
 		#end
 		
