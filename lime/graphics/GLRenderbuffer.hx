@@ -1,6 +1,8 @@
 package lime.graphics;
 #if js
 typedef GLRenderbuffer = js.html.webgl.Renderbuffer;
+#elseif cpp
+typedef GLRenderbuffer = Int;
 #else
 
 

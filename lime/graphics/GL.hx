@@ -12,6 +12,15 @@ import lime.system.System;
 import js.html.webgl.RenderingContext;
 #end
 
+#if mac
+@:headerCode("#include <OpenGL/gl.h>")
+@:buildXml('<target id="haxe"><vflag name="-framework" value="OpenGL" /></target>')
+#elseif windows
+@:headerCode("#include <GL\\gl.h>")
+@:buildXml('<target id="haxe"><lib name="opengl32.lib" /></target>')
+#else
+@:headerCode("#include <GL/gl.h>")
+#end
 
 @:allow(lime.ui.Window)
 class GL {
@@ -376,6 +385,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.activeTexture (texture);
+		#elseif cpp
+		untyped __global__.glActiveTexture (texture);
 		#else
 		lime_gl_active_texture (texture);
 		#end
@@ -437,6 +448,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.bindRenderbuffer (target, renderbuffer);
+		#elseif cpp
+		untyped __global__.glBindRenderbuffer (target, renderbuffer);
 		#else
 		lime_gl_bind_renderbuffer (target, renderbuffer == null ? 0 : renderbuffer.id);
 		#end
@@ -449,6 +462,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.bindTexture (target, texture);
+		#elseif cpp
+		untyped __global__.glBindTexture (target, texture);
 		#else
 		lime_gl_bind_texture(target, texture == null ? 0 : texture.id);
 		#end
@@ -461,6 +476,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.blendColor (red, green, blue, alpha);
+		#elseif cpp
+		untyped __global__.glBlendColor (red, green, blue, alpha);
 		#else
 		lime_gl_blend_color (red, green, blue, alpha);
 		#end
@@ -473,6 +490,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.blendEquation (mode);
+		#elseif cpp
+		untyped __global__.glBlendEquation (mode);
 		#else
 		lime_gl_blend_equation (mode);
 		#end
@@ -485,6 +504,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.blendEquationSeparate (modeRGB, modeAlpha);
+		#elseif cpp
+		untyped __global__.glBlendEquationSeparate (modeRGB, modeAlpha);
 		#else
 		lime_gl_blend_equation_separate (modeRGB, modeAlpha);
 		#end
@@ -497,6 +518,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.blendFunc (sfactor, dfactor);
+		#elseif cpp
+		untyped __global__.glBlendFunc (sfactor, dfactor);
 		#else
 		lime_gl_blend_func (sfactor, dfactor);
 		#end
@@ -509,6 +532,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.blendFuncSeparate (srcRGB, dstRGB, srcAlpha, dstAlpha);
+		#elseif cpp
+		untyped __global__.glBlendFuncSeparate (srcRGB, dstRGB, srcAlpha, dstAlpha);
 		#else
 		lime_gl_blend_func_separate (srcRGB, dstRGB, srcAlpha, dstAlpha);
 		#end
@@ -546,6 +571,8 @@ class GL {
 		return 0;
 		#elseif js
 		return context.checkFramebufferStatus (target);
+		#elseif cpp
+		return untyped __global__.glCheckFramebufferStatus (target);
 		#else
 		return lime_gl_check_framebuffer_status (target);
 		#end
@@ -558,6 +585,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.clear (mask);
+		#elseif cpp
+		untyped __global__.glClear (mask);
 		#else
 		lime_gl_clear (mask);
 		#end
@@ -570,6 +599,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.clearColor (red, green, blue, alpha);
+		#elseif cpp
+		untyped __global__.glClearColor (red, green, blue, alpha);
 		#else
 		lime_gl_clear_color (red, green, blue, alpha);
 		#end
@@ -582,6 +613,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.clearDepth (depth);
+		#elseif cpp
+		untyped __global__.glClearDepth (depth);
 		#else
 		lime_gl_clear_depth (depth);
 		#end
@@ -594,6 +627,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.clearStencil (s);
+		#elseif cpp
+		untyped __global__.glClearStencil (s);
 		#else
 		lime_gl_clear_stencil (s);
 		#end
@@ -606,6 +641,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.colorMask (red, green, blue, alpha);
+		#elseif cpp
+		untyped __global__.glColorMask (red, green, blue, alpha);
 		#else
 		lime_gl_color_mask (red, green, blue, alpha);
 		#end
@@ -718,6 +755,11 @@ class GL {
 		return null;
 		#elseif js
 		return context.createRenderbuffer ();
+		#elseif cpp
+		untyped {
+			__cpp__ ("GLuint id; glGenRenderbuffers (1, &id);");
+			return id;
+		}
 		#else
 		return new GLRenderbuffer (version, lime_gl_create_render_buffer ());
 		#end
@@ -744,6 +786,11 @@ class GL {
 		return null;
 		#elseif js
 		return context.createTexture ();
+		#elseif cpp
+		untyped {
+			__cpp__ ("GLuint id; glGenTextures (1, &id)");
+			return id;
+		}
 		#else
 		return new GLTexture (version, lime_gl_create_texture ());
 		#end
@@ -756,6 +803,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.cullFace (mode);
+		#elseif cpp
+		untyped __global__.glCullFace(mode);
 		#else
 		lime_gl_cull_face (mode);
 		#end
@@ -807,6 +856,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.deleteRenderbuffer (renderbuffer);
+		#elseif cpp
+		untyped __cpp__ ("glDeleteRenderbuffers (1, (GLuint *)&renderbuffer)");
 		#else
 		lime_gl_delete_render_buffer (renderbuffer.id);
 		renderbuffer.invalidate ();
@@ -833,6 +884,11 @@ class GL {
 		#if flash
 		#elseif js
 		context.deleteTexture (texture);
+		#elseif cpp
+		untyped {
+			var id = texture;
+			__cpp__ ("glDeleteTextures (1, (GLuint *)&id)");
+		}
 		#else
 		lime_gl_delete_texture (texture.id);
 		texture.invalidate ();
@@ -846,6 +902,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.depthFunc (func);
+		#elseif cpp
+		untyped __global__.glDepthFunc (func);
 		#else
 		lime_gl_depth_func (func);
 		#end
@@ -858,6 +916,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.depthMask (flag);
+		#elseif cpp
+		untyped __global__.glDepthMask (flag);
 		#else
 		lime_gl_depth_mask (flag);
 		#end
@@ -870,6 +930,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.depthRange (zNear, zFar);
+		#elseif cpp
+		untyped __global__.glDepthRange (zNear, zFar);
 		#else
 		lime_gl_depth_range (zNear, zFar);
 		#end
@@ -894,6 +956,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.disable (cap);
+		#elseif cpp
+		untyped __global__.glDisable (cap);
 		#else
 		lime_gl_disable (cap);
 		#end
@@ -918,6 +982,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.drawArrays (mode, first, count);
+		#elseif cpp
+		untyped __global__.glDrawArrays (mode, first, count);
 		#else
 		lime_gl_draw_arrays (mode, first, count);
 		#end
@@ -942,6 +1008,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.enable (cap);
+		#elseif cpp
+		untyped __global__.glEnable (cap);
 		#else
 		lime_gl_enable (cap);
 		#end
@@ -954,6 +1022,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.enableVertexAttribArray (index);
+		#elseif cpp
+		untyped __global__.glEnableVertexAttribArray (index);
 		#else
 		lime_gl_enable_vertex_attrib_array (index);
 		#end
@@ -966,6 +1036,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.finish ();
+		#elseif cpp
+		untyped __global__.glFinish ();
 		#else
 		lime_gl_finish ();
 		#end
@@ -978,6 +1050,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.flush ();
+		#elseif cpp
+		untyped __global__.glFlush ();
 		#else
 		lime_gl_flush ();
 		#end
@@ -990,6 +1064,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.framebufferRenderbuffer (target, attachment, renderbuffertarget, renderbuffer);
+		#elseif cpp
+		untyped __global__.glFramebufferRenderbuffer (target, attachment, renderbuffertarget, renderbuffer);
 		#else
 		lime_gl_framebuffer_renderbuffer (target, attachment, renderbuffertarget, renderbuffer.id);
 		#end
@@ -1002,6 +1078,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.framebufferTexture2D (target, attachment, textarget, texture, level);
+		#elseif cpp
+		untyped __global__.glFramebufferTexture2D (target, attachment, textarget, texture, level);
 		#else
 		lime_gl_framebuffer_texture2D (target, attachment, textarget, texture.id, level);
 		#end
@@ -1014,6 +1092,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.frontFace (mode);
+		#elseif cpp
+		untyped __global__.glFrontFace (mode);
 		#else
 		lime_gl_front_face (mode);
 		#end
@@ -1026,6 +1106,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.generateMipmap (target);
+		#elseif cpp
+		untyped __global__.glGenerateMipmap (target);
 		#else
 		lime_gl_generate_mipmap (target);
 		#end
@@ -1120,6 +1202,8 @@ class GL {
 		return 0;
 		#elseif js
 		return context.getError ();
+		#elseif cpp
+		return untyped __global__.glGetError ();
 		#else
 		return lime_gl_get_error ();
 		#end
@@ -1344,6 +1428,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.hint (target, mode);
+		#elseif cpp
+		untyped __global__.glHint (target, mode);
 		#else
 		lime_gl_hint (target, mode);
 		#end
@@ -1374,6 +1460,8 @@ class GL {
 		return false;
 		#elseif js
 		return context.isEnabled (cap);
+		#elseif cpp
+		return untyped __global__.glIsEnabled (cap);
 		#else
 		return lime_gl_is_enabled (cap);
 		#end
@@ -1413,6 +1501,8 @@ class GL {
 		return false;
 		#elseif js
 		return context.isRenderbuffer (renderbuffer);
+		#elseif cpp
+		return untyped __global__.glIsRenderbuffer (renderbuffer);
 		#else
 		return renderbuffer != null && renderbuffer.id > 0 && lime_gl_is_renderbuffer (renderbuffer.id);
 		#end
@@ -1439,6 +1529,8 @@ class GL {
 		return false;
 		#elseif js
 		return context.isTexture (texture);
+		#elseif cpp
+		return untyped __global__.glIsTexture (texture);
 		#else
 		return texture != null && texture.id > 0 && lime_gl_is_texture (texture.id);
 		#end
@@ -1451,6 +1543,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.lineWidth (width);
+		#elseif cpp
+		untyped __global__.glLineWidth (width);
 		#else
 		lime_gl_line_width (width);
 		#end
@@ -1535,6 +1629,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.scissor (x, y, width, height);
+		#elseif cpp
+		untyped __global__.glScissor (x, y, width, height);
 		#else
 		lime_gl_scissor (x, y, width, height);
 		#end
@@ -1559,6 +1655,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.stencilFunc (func, ref, mask);
+		#elseif cpp
+		untyped __global__.glStencilFunc (func, ref, mask);
 		#else
 		lime_gl_stencil_func (func, ref, mask);
 		#end
@@ -1571,6 +1669,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.stencilFuncSeparate (face, func, ref, mask);
+		#elseif cpp
+		untyped __global__.glStencilFuncSeparate (face, func, ref, mask);
 		#else
 		lime_gl_stencil_func_separate (face, func, ref, mask);
 		#end
@@ -1583,6 +1683,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.stencilMask (mask);
+		#elseif cpp
+		untyped __global__.glStencilMask (mask);
 		#else
 		lime_gl_stencil_mask (mask);
 		#end
@@ -1595,6 +1697,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.stencilMaskSeparate (face, mask);
+		#elseif cpp
+		untyped __global__.glStencilMaskSeparate (face, mask);
 		#else
 		lime_gl_stencil_mask_separate (face, mask);
 		#end
@@ -1607,6 +1711,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.stencilOp (fail, zfail, zpass);
+		#elseif cpp
+		untyped __global__.glStencilOp (fail, zfail, zpass);
 		#else
 		lime_gl_stencil_op (fail, zfail, zpass);
 		#end
@@ -1619,6 +1725,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.stencilOpSeparate (face, fail, zfail, zpass);
+		#elseif cpp
+		untyped __global__.glStencilOpSeparate (face, fail, zfail, zpass);
 		#else
 		lime_gl_stencil_op_separate (face, fail, zfail, zpass);
 		#end
@@ -1679,6 +1787,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform1f (location, x);
+		#elseif cpp
+		untyped __global__.glUniform1f (location, x);
 		#else
 		lime_gl_uniform1f (location, x);
 		#end
@@ -1703,6 +1813,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform1i (location, x);
+		#elseif cpp
+		untyped __global__.glUniform1i (location, x);
 		#else
 		lime_gl_uniform1i (location, x);
 		#end
@@ -1727,6 +1839,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform2f (location, x, y);
+		#elseif cpp
+		untyped __global__.glUniform2f (location, x, y);
 		#else
 		lime_gl_uniform2f (location, x, y);
 		#end
@@ -1751,6 +1865,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform2i (location, x, y);
+		#elseif cpp
+		untyped __global__.glUniform2i (location, x, y);
 		#else
 		lime_gl_uniform2i (location, x, y);
 		#end
@@ -1775,6 +1891,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform3f (location, x, y, z);
+		#elseif cpp
+		untyped __global__.glUniform3f (location, x, y, z);
 		#else
 		lime_gl_uniform3f (location, x, y, z);
 		#end
@@ -1799,6 +1917,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform3i (location, x, y, z);
+		#elseif cpp
+		untyped __global__.glUniform3i (location, x, y, z);
 		#else
 		lime_gl_uniform3i (location, x, y, z);
 		#end
@@ -1823,6 +1943,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform4f (location, x, y, z, w);
+		#elseif cpp
+		untyped __global__.glUniform4f (location, x, y, z, w);
 		#else
 		lime_gl_uniform4f (location, x, y, z, w);
 		#end
@@ -1847,6 +1969,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.uniform4i (location, x, y, z, w);
+		#elseif cpp
+		untyped __global__.glUniform4i (location, x, y, z, w);
 		#else
 		lime_gl_uniform4i (location, x, y, z, w);
 		#end
@@ -1938,6 +2062,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.vertexAttrib1f (indx, x);
+		#elseif cpp
+		untyped __global__.glVertexAttrib1f (indx, x);
 		#else
 		lime_gl_vertex_attrib1f (indx, x);
 		#end
@@ -1962,6 +2088,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.vertexAttrib2f (indx, x, y);
+		#elseif cpp
+		untyped __global__.glVertexAttrib2f (indx, x, y);
 		#else
 		lime_gl_vertex_attrib2f (indx, x, y);
 		#end
@@ -1986,6 +2114,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.vertexAttrib3f (indx, x, y, z);
+		#elseif cpp
+		untyped __global__.glVertexAttrib3f (indx, x, y, z);
 		#else
 		lime_gl_vertex_attrib3f (indx, x, y, z);
 		#end
@@ -2010,6 +2140,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.vertexAttrib4f (indx, x, y, z, w);
+		#elseif cpp
+		untyped __global__.glVertexAttrib4f (indx, x, y, z, w);
 		#else
 		lime_gl_vertex_attrib4f (indx, x, y, z, w);
 		#end
@@ -2046,6 +2178,8 @@ class GL {
 		#if flash
 		#elseif js
 		context.viewport (x, y, width, height);
+		#elseif cpp
+		untyped __global__.glViewport (x, y, width, height);
 		#else
 		lime_gl_viewport (x, y, width, height);
 		#end

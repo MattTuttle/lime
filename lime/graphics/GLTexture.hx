@@ -1,6 +1,8 @@
 package lime.graphics;
 #if js
 typedef GLTexture = js.html.webgl.Texture;
+#elseif cpp
+typedef GLTexture = Int;
 #else
 
 
