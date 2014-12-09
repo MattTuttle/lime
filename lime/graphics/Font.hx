@@ -22,7 +22,7 @@ class Font {
 	public var glyphs:Map<Int, Map<Int, GlyphRect>>;
 	
 	@:noCompletion private var __fontPath:String;
-	@:noCompletion private var __handle:Dynamic;
+	@:noCompletion @:allow(lime.graphics.TextFormat) private var __handle:Dynamic;
 	
 	
 	public function new (fontName:String = null) {
